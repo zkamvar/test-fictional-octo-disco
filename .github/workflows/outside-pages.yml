@@ -98,7 +98,7 @@ jobs:
             cp ${tmp} index.html
             git add -A
             git commit --allow-empty -m "auto commit"
-            git push --repo=https://${{ steps.app-token.outputs.app-slug}}:${{ steps.app-token.outputs.token }}@github.com/${repo}.git -u --force --set-upstream origin gh-pages
+            # git push --repo=https://${{ steps.app-token.outputs.app-slug}}:${{ steps.app-token.outputs.token }}@github.com/${repo}.git -u --force --set-upstream origin gh-pages
             cd -
           done
       # - name: Checkout
