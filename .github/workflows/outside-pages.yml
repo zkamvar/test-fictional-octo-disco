@@ -41,7 +41,6 @@ jobs:
           owner: ${{ github.repository_owner }}
       - name: List Installed apps
         run: |
-          local ari
           readarray -t ari < \
           <(curl --request GET \
           --header "Accept: application/vnd.github+json" \
