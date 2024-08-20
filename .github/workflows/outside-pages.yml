@@ -65,7 +65,7 @@ jobs:
               <p>
           '
           body=$(cat README.md)'</p>'
-          code='<pre><code>'$(cat *.R)'</pre></code>'
+          code='<pre><code>'$(cat *.r)'</pre></code>'
           end='
             </main>
            
