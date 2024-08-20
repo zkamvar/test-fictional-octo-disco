@@ -73,7 +73,7 @@ jobs:
           </body>
           </html>
           '
-          printf $head$body$code$end > index.html
+          echo "${head}${body}${code}${end}" > index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
