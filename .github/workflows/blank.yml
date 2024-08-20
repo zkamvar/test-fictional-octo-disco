@@ -32,5 +32,4 @@ jobs:
           body: |
             Hey, @${{ github.event.comment.user.login }}!
             :cry:  No one approved your run yet! Have someone from the @joshjohanning-org/approver-team run `/approve` and then try your command again
-            :no_entry_sign: :no_entry: Marking the workflow run as failed
-your project.
+            :no_entry_sign: :no_entry: Marking the workflow run as failed 
