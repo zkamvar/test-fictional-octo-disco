@@ -29,7 +29,7 @@ jobs:
           private-key: ${{ secrets.PRIVATE_KEY }}
           # optional: owner not needed IF the app has access to the repo running the workflow
           #   if you get 'RequestError [HttpError]: Not Found 404', pass in owner
-          # owner: ${{ github.repository_owner }}
+          owner: ${{ github.repository_owner }}
 
       # example 1a - cloning repo - clone using the `actions/checkout` step
       - name: Checkout
