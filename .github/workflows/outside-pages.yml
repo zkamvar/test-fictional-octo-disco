@@ -41,7 +41,7 @@ jobs:
           owner: ${{ github.repository_owner }}
       - name: List Installed apps
         env:
-          GH_TOKEN=${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           readarray -t ari < \
           <(curl --request GET \
