@@ -40,17 +40,49 @@ jobs:
           #   if you get 'RequestError [HttpError]: Not Found 404', pass in owner
           owner: ${{ github.repository_owner }}
       - name: List Installed apps
+        env:
+          GH_TOKEN=${{ steps.app-token.outputs.token }}
         run: |
           readarray -t ari < \
           <(curl --request GET \
           --header "Accept: application/vnd.github+json" \
-          --header "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+          --header "Authorization: Bearer ${{ env.GH_TOKEN }}" \
           --header "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/installation/repositories?per_page=100 \
           | jq -r .repositories[].full_name)
           for repo in "${ari[@]}"
           do
-            echo $repo
+            gh repo clone $repo $repo -- --depth=1
+            cd $repo
+            timestamp=$(date)
+            head='
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <title>Generated Page</title>
+              <meta charset="utf-8" />
+              <!-- other meta, CSS, and custom tags -->
+            </head>
+             
+            <body>
+              <header>Generated Content</header>
+             
+              <main>
+                <h1>Content From ${{ env.REPO }}</h1>
+                <p>
+            '
+            body=${date}'<br>'$(cat README.md)'</p>'
+            code='<pre><code>'$(cat *.r)'</pre></code>'
+            end='
+              </main>
+             
+              <footer>Site Footer</footer>
+            </body>
+            </html>
+            '
+            echo "${head}${body}${code}${end}" > index.html
+            cat index.html
+            cd -
           done
       # - name: Checkout
       #   uses: actions/checkout@v4
@@ -60,35 +92,6 @@ jobs:
       #     path: my-repo
       # - name: Glue Stuff
       #   run: |
-      #     cd my-repo
-      #     timestamp=$(date)
-      #     head='
-      #     <!DOCTYPE html>
-      #     <html lang="en">
-      #     <head>
-      #       <title>Generated Page</title>
-      #       <meta charset="utf-8" />
-      #       <!-- other meta, CSS, and custom tags -->
-      #     </head>
-           
-      #     <body>
-      #       <header>Generated Content</header>
-           
-      #       <main>
-      #         <h1>Content From ${{ env.REPO }}</h1>
-      #         <p>
-      #     '
-      #     body=${date}'<br>'$(cat README.md)'</p>'
-      #     code='<pre><code>'$(cat *.r)'</pre></code>'
-      #     end='
-      #       </main>
-           
-      #       <footer>Site Footer</footer>
-      #     </body>
-      #     </html>
-      #     '
-      #     echo "${head}${body}${code}${end}" > index.html
-      #     cat index.html
       # - name: Setup Pages
       #   uses: actions/configure-pages@v5
       # - name: Upload artifact
