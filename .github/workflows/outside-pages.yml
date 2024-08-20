@@ -27,8 +27,9 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-      REPO: zkamvar/CardTrick
     runs-on: ubuntu-latest
+    env:
+      REPO: zkamvar/CardTrick
     steps:
       - uses: actions/create-github-app-token@v1
         id: app-token
