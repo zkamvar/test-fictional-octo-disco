@@ -1,0 +1,60 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  env: 
+    REPO: zkamvar/CardTrick
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with: 
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          # optional: owner not needed IF the app has access to the repo running the workflow
+          #   if you get 'RequestError [HttpError]: Not Found 404', pass in owner
+          # owner: ${{ github.repository_owner }}
+
+      # example 1a - cloning repo - clone using the `actions/checkout` step
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPO }}
+          token: ${{ steps.app-token.outputs.token }}
+          path: my-repo
+
+      # example 1b - cloning repo - using git clone command
+      - name: Clone Repository
+        run: | 
+          mkdir my-repo-2 && cd my-repo-2
+          git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ env.REPO }}.git
+
+      # example 2a - api - call an api using curl
+      - name: Get Repo (curl)
+        run: | 
+          curl \
+            -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+            https://api.github.com/repos/${{ env.REPO }}
+
+      # example 2b - api - call an api using the GitHub CLI
+      - name: Get Repo (gh api)
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: | 
+          gh api /repos/{{ env.REPO}}
