@@ -99,6 +99,7 @@ jobs:
             git add -A
             git commit --allow-empty -m "auto commit"
             git push -u --force --set-upstream origin gh-pages
+            gh repo sync ${repo} -b gh-pages --force -s $(pwd)
             cd -
           done
       # - name: Checkout
