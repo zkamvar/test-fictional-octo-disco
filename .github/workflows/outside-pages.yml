@@ -41,12 +41,18 @@ jobs:
           owner: ${{ github.repository_owner }}
       - name: List Installed apps
         run: |
-          curl --request GET \
+          local ari
+          readarray -t ari < \
+          <(curl --request GET \
           --header "Accept: application/vnd.github+json" \
           --header "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
           --header "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/installation/repositories?per_page=100 \
-          | jq .repositories[].full_name
+          | jq -r .repositories[].full_name)
+          for repo in "${ari[@]}"
+          do
+            echo $repo
+          done
       # - name: Checkout
       #   uses: actions/checkout@v4
       #   with:
