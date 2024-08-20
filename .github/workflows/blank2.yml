@@ -13,10 +13,10 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  env: 
-    REPO: zkamvar/CardTrick
   # This workflow contains a single job called "build"
   build:
+    env: 
+      REPO: zkamvar/CardTrick
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
