@@ -45,6 +45,34 @@ jobs:
           repository: ${{ env.REPO }}
           token: ${{ steps.app-token.outputs.token }}
           path: my-repo
+      - name: Glue Stuff
+        run: |
+          head='
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <title>Generated Page</title>
+            <meta charset="utf-8" />
+            <!-- other meta, CSS, and custom tags -->
+          </head>
+           
+          <body>
+            <header>Generated Content</header>
+           
+            <main>
+              <h1>Content From ${{ env.REPO }}</h1>
+              <p>
+          '
+          body=$(cat README.md)'</p>'
+          code='<pre><code>'$(cat Aces.R)'</pre></code>'
+          end='
+            </main>
+           
+            <footer>Site Footer</footer>
+          </body>
+          </html>
+          '
+          printf $head$body$code$end > index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
