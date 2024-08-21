@@ -11,7 +11,7 @@ tmp=$(mktemp)
 dir=$(mktemp -d)
 cd "${dir}" || return
 git config --global user.name "${SLUG}[bot]"
-git config --global user.email "${ID}+${SLUG}[bot]@users.noreply.github.com>"
+git config --global user.email "<${ID}+${SLUG}[bot]@users.noreply.github.com>"
 for repo in "${ari[@]}"
 do
   gh repo clone "$repo" "$repo" -- --depth=1
