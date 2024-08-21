@@ -94,6 +94,7 @@ jobs:
           path: ${{ runner.temp }}/${{ matrix.repo }}
       - name: Deploy
         env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           repo: ${{ matrix.repo }}
           deploy_id: ${{ steps.process.outputs.id }}
           artifact_id: ${{ steps.upload.outputs.artifact-id }}
