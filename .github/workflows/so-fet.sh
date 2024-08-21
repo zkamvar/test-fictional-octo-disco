@@ -10,6 +10,8 @@ readarray -t ari < \
 tmp=$(mktemp)
 dir=$(mktemp -d)
 cd "${dir}" || return
+git config --global user.name "${SLUG}[bot]"
+git config --global user.email "${ID}+${SLUG}[bot]@users.noreply.github.com>"
 for repo in "${ari[@]}"
 do
   gh repo clone "$repo" "$repo" -- --depth=1
@@ -41,8 +43,6 @@ do
   '
   echo "${head}${body}${code}${end}" > "${tmp}"
   cat "${tmp}"
-  git config --global user.name "${SLUG}[bot]"
-  git config --global user.email "${ID}+${SLUG}[bot]@users.noreply.github.com>"
   CURR_HEAD=$(git rev-parse HEAD)
   git checkout --orphan gh-pages
   git add -A
@@ -51,6 +51,12 @@ do
   cp "${tmp}" index.html
   git add -A
   git commit --allow-empty -m "auto commit"
-  # git push --repo=https://${SLUG}${{ steps.app-token.outputs.token }}@github.com/${repo}.git -u --force --set-upstream origin gh-pages
+    # --repo="https://${SLUG}${GH_TOKEN}@github.com/${repo}.git" \
+  git push \
+    -u \
+    --force \
+    --set-upstream \
+    origin \
+    gh-pages
   cd - || return
 done
