@@ -46,6 +46,9 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Echo build params
+        run:
+          echo "build_version: ${{ env.GITHUB_SHA }}"
       - name: Process installed apps
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -53,6 +56,7 @@ jobs:
           ID: ${{ steps.get-user-id.outputs.user-id }}
           CONTEXT: ${{ toJSON(github.event) }}
         run: bash ${{ github.workspace }}/.github/workflows/so-fet.sh
+        
       # - name: Checkout
       #   uses: actions/checkout@v4
       #   with:
