@@ -56,8 +56,8 @@ do
   cp "${tmp}" index.html
   git add -A
   git commit --allow-empty -m "auto commit"
-    # --repo="https://${SLUG}${GH_TOKEN}@github.com/${repo}.git" \
   git push \
+    --repo="https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" \
     -u \
     --force \
     --set-upstream \
