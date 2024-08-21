@@ -15,6 +15,7 @@ git config --global user.email "${ID}+${SLUG}[bot]@users.noreply.github.com>"
 for repo in "${ari[@]}"
 do
   gh repo clone "$repo" "$repo" -- --depth=1
+  git config --list
   cd "${repo}" || return
   timestamp=$(date)
   head="
@@ -42,7 +43,7 @@ do
   </html>
   '
   echo "${head}${body}${code}${end}" > "${tmp}"
-  cat "${tmp}"
+  # cat "${tmp}"
   CURR_HEAD=$(git rev-parse HEAD)
   git checkout --orphan gh-pages
   git add -A
