@@ -1,4 +1,4 @@
 #!/bin/env bash
-echo "AID: ${artifact_id}"
-echo "Deploy ID: $(cd ${RUNNER_TEMP}/${repo} && git rev-parse HEAD)"
+echo "AID: ${artifact_id:-missing}"
+echo "Deploy ID: ${deploy_id:-missing}"
 

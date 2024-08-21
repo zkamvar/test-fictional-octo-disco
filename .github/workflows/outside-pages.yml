@@ -95,5 +95,6 @@ jobs:
       - name: Deploy
         env:
           repo: ${{ matrix.repo }}
+          deploy_id: ${{ steps.process.outputs.id }}
           artifact_id: ${{ steps.upload.outputs.artifact-id }}
-        run: bash deploy.sh
+        run: bash ${{ github.workspace }}/.github/workflows/deploy.sh
