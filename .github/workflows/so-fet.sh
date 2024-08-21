@@ -8,6 +8,8 @@ readarray -t ari < \
   | jq -r .repositories[].full_name)
 
 tmp=$(mktemp)
+dir=$(mktemp -d)
+cd "${dir}" || return
 for repo in "${ari[@]}"
 do
   gh repo clone "$repo" "$repo" -- --depth=1
