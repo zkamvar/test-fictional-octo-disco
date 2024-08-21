@@ -44,6 +44,9 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: List Repositories
+        id: list-repos
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           echo "repos=$(gh api /installation/repositories?per_page=100 \
           | jq -cr '[.repositories[].full_name]')" >> "$GITHUB_OUTPUT"
