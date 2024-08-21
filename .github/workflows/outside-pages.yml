@@ -87,8 +87,8 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: '${{ env.repo }}'
-          path: ${{ runner.temp }}/${{ env.repo }}
+          name: '${{ matrix.repo }}'
+          path: ${{ runner.temp }}/${{ matrix.repo }}
       - name: Deploy
         env:
           repo: ${{ matrix.repo }}
