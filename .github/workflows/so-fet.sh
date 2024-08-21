@@ -15,7 +15,8 @@ git config --global user.email "${ID}+${SLUG}[bot]@users.noreply.github.com"
 for repo in "${ari[@]}"
 do
   echo "${GH_TOKEN}"
-  printf "protocol=https\nhost=github.com\n" | git credential fill
+  gh auth status
+  # printf "protocol=https\nhost=github.com\n" | git credential fill
   gh repo clone "$repo" "$repo" -- --depth=1
   git config --list
   cd "${repo}" || return
