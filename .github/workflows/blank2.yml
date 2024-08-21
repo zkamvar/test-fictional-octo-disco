@@ -52,9 +52,3 @@ jobs:
             -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
             https://api.github.com/repos/${{ env.REPO }}
 
-      # example 2b - api - call an api using the GitHub CLI
-      - name: Get Repo (gh api)
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: | 
-          gh api /repos/{{ env.REPO}}
