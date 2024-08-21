@@ -16,6 +16,7 @@ git clone --depth=1 \
 cd "${repo}" || return
 echo "build_version: ${GITHUB_SHA}"
 echo "commit       : $(git rev-parse HEAD)"
+echo "name=${repo//\//-}" >> "${GITHUB_OUTPUT}"
 git config --list
 git remote -v
 timestamp=$(date)

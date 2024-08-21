@@ -76,6 +76,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Process installed apps
+        id: process
         env:
           repo: ${{ matrix.repo }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -84,10 +85,12 @@ jobs:
           CONTEXT: ${{ toJSON(github.event) }}
         run: bash ${{ github.workspace }}/.github/workflows/build-page.sh
       - name: Upload artifact
+        env:
+          repo: ${{ matrix.repo }}
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: '${{ matrix.repo }}'
+          name: '${{ steps.process.outputs.name }}'
           path: ${{ runner.temp }}/${{ matrix.repo }}
       - name: Deploy
         env:
