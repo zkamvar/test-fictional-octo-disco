@@ -51,7 +51,7 @@ jobs:
           ID: ${{ steps.get-user-id.outputs.user-id }}
 
         run: |
-          source ${{ github.workspace }}/so-fet.sh
+          source ${{ github.action_path }}/so-fet.sh
       # - name: Checkout
       #   uses: actions/checkout@v4
       #   with:
