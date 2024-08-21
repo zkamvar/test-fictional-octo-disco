@@ -37,6 +37,8 @@ do
     "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" \
     "${repo}"
   cd "${repo}" || return
+  echo "build_version: ${GITHUB_SHA}"
+  echo "commit       : $(git rev-parse HEAD)"
   git config --list
   git remote -v
   timestamp=$(date)
