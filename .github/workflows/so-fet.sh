@@ -14,8 +14,12 @@ git config --global user.name "${SLUG}[bot]"
 git config --global user.email "${ID}+${SLUG}[bot]@users.noreply.github.com"
 for repo in "${ari[@]}"
 do
-  echo "${GH_TOKEN}"
-  gh auth status
+  # https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-as-a-github-app-installation
+  # You can also use an installation access token to authenticate for
+  # HTTP-based Git access. Your app must have the "Contents" repository
+  # permission. You can then use the installation access token as the HTTP
+  # password. Replace TOKEN with the installation access token: git clone
+  # https://x-access-token:TOKEN@github.com/owner/repo.git.
   git clone --depth=1 \
     "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" \
     "${repo}"
@@ -37,9 +41,14 @@ do
 
   <main>
   <h1>Content From ${repo}</h1>
+  <h2>Bot Information</h2>
+  <pre>
+  $(gh auth status)
+  </pre>
+  <h2>README.md</h2>
   <p>
   "
-  body=${timestamp}'<br>'$(cat README.md)'</p>'
+  body="${timestamp}<br>$(cat README.md | sed 's/$/<br>/g')</p>"
   code='<pre><code>'$(cat ./*.r)'</pre></code>'
   end='
   </main>
@@ -57,7 +66,6 @@ do
   cp "${tmp}" index.html
   git add -A
   git commit --allow-empty -m "auto commit"
-    # --repo="https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" \
   git push \
     -u \
     --force \
