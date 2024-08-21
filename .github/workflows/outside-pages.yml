@@ -60,14 +60,27 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with: 
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          # optional: owner not needed IF the app has access to the repo running the workflow
+          #   if you get 'RequestError [HttpError]: Not Found 404', pass in owner
+          owner: ${{ github.repository_owner }}
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" | jq -r .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Checkout
         uses: actions/checkout@v4
       - name: Process installed apps
         env:
           repo: ${{ matrix.repo }}
-          GH_TOKEN: ${{ needs.list.outputs.token }}
-          SLUG: ${{ needs.list.outputs.app-slug }}
-          ID: ${{ needs.list.outputs.user-id }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SLUG: ${{ steps.app-token.outputs.app-slug }}
+          ID: ${{ steps.get-user-id.outputs.user-id }}
           CONTEXT: ${{ toJSON(github.event) }}
         run: bash ${{ github.workspace }}/.github/workflows/build-page.sh
       - name: Upload artifact
