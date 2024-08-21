@@ -46,9 +46,6 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Echo build params
-        run:
-          echo "build_version: ${{ env.GITHUB_SHA }}"
       - name: Process installed apps
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
