@@ -18,9 +18,9 @@ do
   gh auth status
   # printf "protocol=https\nhost=github.com\n" | git credential fill
   gh repo clone "$repo" "$repo" -- --depth=1
+  cd "${repo}" || return
   git config --list
   git remote -v
-  cd "${repo}" || return
   timestamp=$(date)
   head="
   <!DOCTYPE html>
