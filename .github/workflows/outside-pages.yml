@@ -121,4 +121,5 @@ jobs:
           repo: ${{ matrix.repo }}
           deploy_id: ${{ steps.process.outputs.id }}
           artifact_id: ${{ steps.upload.outputs.artifact-id }}
+          artifact_url: ${{ steps.upload.outputs.artifact-url }}
         run: bash ${{ github.workspace }}/.github/workflows/deploy.sh
