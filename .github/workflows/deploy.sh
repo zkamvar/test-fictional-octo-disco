@@ -1,4 +1,5 @@
 #!/bin/env bash
+set -x
 echo "AID: ${artifact_id:-missing}"
 echo "Deploy ID: ${deploy_id:-missing}"
 curl -L \
