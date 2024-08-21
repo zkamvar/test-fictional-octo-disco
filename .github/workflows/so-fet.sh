@@ -1,4 +1,10 @@
 #!/bin/env bash
+
+# FETCH REPOSITORIES THAT HAVE INSTALLED OUR APP
+# ==============================================
+# 
+# When someone installs the app to their repository, we can use this to grab
+# all the repositories where the app is installed, so we can loop through them
 readarray -t ari < \
   <(curl --request GET \
   --header "Accept: application/vnd.github+json" \
@@ -7,6 +13,13 @@ readarray -t ari < \
   https://api.github.com/installation/repositories?per_page=100 \
   | jq -r .repositories[].full_name)
 
+# CLONE THE REPOS, DO STUFF, AND PUSH
+# ===================================
+#
+# Here is an example of what we can do with the repositories.
+# NOTE: We have explicit content writing permissions for the app, but this does
+# not have to be the case. We could use the GitHub API to deploy the site (but
+#
 tmp=$(mktemp)
 dir=$(mktemp -d)
 cd "${dir}" || return
@@ -45,10 +58,14 @@ do
   <pre>
   $(gh auth status)
   </pre>
+  <h2>Context</h2>
+  <pre>
+  ${CONTEXT}
+  </pre>
   <h2>README.md</h2>
   <p>
   "
-  body="${timestamp}<br>$(cat README.md | sed 's/$/<br>/g')</p>"
+  body="${timestamp}<br>$(sed 's/$/<br>/g' < README.md)</p>"
   code='<pre><code>'$(cat ./*.r)'</pre></code>'
   end='
   </main>
@@ -57,7 +74,6 @@ do
   </html>
   '
   echo "${head}${body}${code}${end}" > "${tmp}"
-  # cat "${tmp}"
   CURR_HEAD=$(git rev-parse HEAD)
   git checkout --orphan gh-pages
   git add -A
