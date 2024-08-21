@@ -22,14 +22,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  list:
     runs-on: ubuntu-latest
-    env:
-      REPO: zkamvar/CardTrick
+    outputs:
+      token: ${{ steps.app-token.outputs.token }}
+      slug:  ${{ steps.app-token.outputs.app-slug }}
+      id:    ${{ steps.get-user-id.outputs.user-id }}
+      repos: ${{ steps.list-repos.outputs.repos }}
     steps:
       - uses: actions/create-github-app-token@v1
         id: app-token
@@ -44,28 +43,38 @@ jobs:
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" | jq -r .id)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      - name: List Repositories
+        run: |
+          echo "repos=$(gh api /installation/repositories?per_page=100 \
+          | jq -cr '[.repositories[].full_name]')" >> "$GITHUB_OUTPUT"
+  deploy:
+    needs: list
+    strategy: 
+      matrix:
+        repo: ${{ fromJSON(needs.list.outputs.repos) }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Process installed apps
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          SLUG: ${{ steps.app-token.outputs.app-slug }}
-          ID: ${{ steps.get-user-id.outputs.user-id }}
+          repo: ${{ matrix.repo }}
+          GH_TOKEN: ${{ needs.list.outputs.token }}
+          SLUG: ${{ needs.list.outputs.app-slug }}
+          ID: ${{ needs.list.outputs.user-id }}
           CONTEXT: ${{ toJSON(github.event) }}
-        run: bash ${{ github.workspace }}/.github/workflows/so-fet.sh
-        
-      # - name: Checkout
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: ${{ env.REPO }}
-      #     token: ${{ steps.app-token.outputs.token }}
-      #     path: my-repo
-      # - name: Glue Stuff
-      #   run: |
-      # - name: Setup Pages
-      #   uses: actions/configure-pages@v5
-      # - name: Upload artifact
-      #   uses: actions/upload-pages-artifact@v3
-      #   with:
-      #     # Upload entire repository
-      #     path: '.'
+        run: bash ${{ github.workspace }}/.github/workflows/build-page.sh
+      - name: Upload artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{ env.repo }}'
+          path: ${{ runner.temp }}/${{ env.repo }}
+      - name: Deploy
+        env:
+          repo: ${{ matrix.repo }}
+          artifact_id: ${{ steps.upload.outputs.artifact-id }}
+        run: bash deploy.sh
