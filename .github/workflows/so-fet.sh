@@ -16,8 +16,9 @@ for repo in "${ari[@]}"
 do
   echo "${GH_TOKEN}"
   gh auth status
-  # printf "protocol=https\nhost=github.com\n" | git credential fill
-  gh repo clone "$repo" "$repo" -- --depth=1
+  git clone --depth=1 \
+    "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" \
+    "${repo}"
   cd "${repo}" || return
   git config --list
   git remote -v
@@ -56,8 +57,8 @@ do
   cp "${tmp}" index.html
   git add -A
   git commit --allow-empty -m "auto commit"
+    # --repo="https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" \
   git push \
-    --repo="https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" \
     -u \
     --force \
     --set-upstream \
