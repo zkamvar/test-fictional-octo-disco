@@ -19,6 +19,7 @@ do
   # printf "protocol=https\nhost=github.com\n" | git credential fill
   gh repo clone "$repo" "$repo" -- --depth=1
   git config --list
+  git remote -v
   cd "${repo}" || return
   timestamp=$(date)
   head="
