@@ -50,8 +50,7 @@ jobs:
           SLUG: ${{ steps.app-token.outputs.app-slug }}
           ID: ${{ steps.get-user-id.outputs.user-id }}
 
-        run: |
-          source ${{ github.action_path }}/so-fet.sh
+        run: bash ${{ github.action_path }}/so-fet.sh
       # - name: Checkout
       #   uses: actions/checkout@v4
       #   with:

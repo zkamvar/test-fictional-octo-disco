@@ -1,4 +1,4 @@
-
+#!/bin/env bash
 readarray -t ari < \
   <(curl --request GET \
   --header "Accept: application/vnd.github+json" \
