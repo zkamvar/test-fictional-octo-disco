@@ -74,7 +74,7 @@ flowchart TD
     app-->|grants permission to|app-workflows
     app-workflows-.->|writes to|gh-pages
     gh-pages-->|source for|site1
-    app-.->|installed on|site1-repo
+    app-->|installed on|site1-repo
 ```
 
  - Pros
