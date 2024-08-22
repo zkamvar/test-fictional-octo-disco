@@ -49,7 +49,9 @@ The problem is that it is not possible to _directly_ build a gh-pages site. The
 only way we could maintain a workflow this simple is if we deployed to a site
 owned by this repo (e.g. an AWS S3 bucket or Netlify), but that means extra
 maintenance work for us and lack of customisable domains for the users (without
-significant effort). Below are two potential solutions.
+significant effort). Below are two potential solutions (note that I removed the
+"knows ID and private key" edge, but that is implied in the other diagrams).
+
 
 ### Solution 1: No workflow in repo, but App writes to `gh-pages`
 
