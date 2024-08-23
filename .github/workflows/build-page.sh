@@ -38,7 +38,7 @@ head="
 <p>
 Generated on: ${timestamp}
 <br>
-source: <a href='https://github.com${repo}'>${repo}</a>
+source: <a href='https://github.com/${repo}'>${repo}</a>
 </p>
 <h2>Bot Information</h2>
 <pre>
