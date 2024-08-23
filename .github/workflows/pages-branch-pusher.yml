@@ -1,15 +1,15 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy static content to Pages by pushing to `gh-pages`
 
 on:
+  push:
+    branches: ["main"]
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -19,11 +19,12 @@ concurrency:
 
 jobs:
   list:
+    name: "List Registered Repositories"
     runs-on: ubuntu-latest
     outputs:
       token: ${{ steps.app-token.outputs.token }}
-      app-slug:  ${{ steps.app-token.outputs.app-slug }}
-      user-id:    ${{ steps.get-user-id.outputs.user-id }}
+      app-slug: ${{ steps.app-token.outputs.app-slug }}
+      user-id: ${{ steps.get-user-id.outputs.user-id }}
       repos: ${{ steps.list-repos.outputs.repos }}
     steps:
       - uses: actions/create-github-app-token@v1
@@ -47,6 +48,7 @@ jobs:
           echo "repos=$(gh api /installation/repositories?per_page=100 \
           | jq -cr '[.repositories[].full_name]')" >> "$GITHUB_OUTPUT"
   deploy:
+    name: "Generate and Deploy Page to `gh-pages` Branch"
     needs: list
     strategy: 
       matrix:
@@ -61,8 +63,6 @@ jobs:
         with: 
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
-          # optional: owner not needed IF the app has access to the repo running the workflow
-          #   if you get 'RequestError [HttpError]: Not Found 404', pass in owner
           owner: ${{ github.repository_owner }}
       - name: Get GitHub App User ID
         id: get-user-id
@@ -79,43 +79,4 @@ jobs:
           SLUG: ${{ steps.app-token.outputs.app-slug }}
           ID: ${{ steps.get-user-id.outputs.user-id }}
           CONTEXT: ${{ toJSON(github.event) }}
-        run: bash ${{ github.workspace }}/.github/workflows/build-page-artifact.sh
-      - name: Upload artifact
-        env:
-          repo: ${{ matrix.repo }}
-        id: upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: '${{ steps.process.outputs.name }}'
-          path: ${{ runner.temp }}/${{ matrix.repo }}
-      - uses: actions/github-script@v6
-        id: script
-        timeout-minutes: 10
-        with:
-          debug: true
-          script: |
-            const token = process.env['ACTIONS_RUNTIME_TOKEN']
-            const runtimeUrl = process.env['ACTIONS_ID_TOKEN_REQUEST_URL']
-            core.setOutput('TOKEN', token.trim())
-            core.setOutput('IDTOKENURL', runtimeUrl.trim())
-      - run: |
-          IDTOKEN=$(curl -H "Authorization: bearer  ${{steps.script.outputs.TOKEN}}" ${{steps.script.outputs.IDTOKENURL}}  -H "Accept: application/json; api-version=2.0" -H "Content-Type: application/json" -d "{}" | jq -r '.value')
-          echo $IDTOKEN
-          jwtd() {
-              if [[ -x $(command -v jq) ]]; then
-                  jq -R 'split(".") | .[0],.[1] | @base64d | fromjson' <<< "${1}"
-                  echo "Signature: $(echo "${1}" | awk -F'.' '{print $3}')"
-              fi
-          }
-          jwtd $IDTOKEN
-          echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
-        id: tokenid
-      - name: Deploy
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          ID_TOKEN: ${{ steps.tokenid.outputs.idToken }}
-          repo: ${{ matrix.repo }}
-          deploy_id: ${{ steps.process.outputs.id }}
-          artifact_id: ${{ steps.upload.outputs.artifact-id }}
-          artifact_url: ${{ steps.upload.outputs.artifact-url }}
-        run: bash ${{ github.workspace }}/.github/workflows/deploy.sh
+        run: bash ${{ github.workspace }}/.github/workflows/build-page.sh

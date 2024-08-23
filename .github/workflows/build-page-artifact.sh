@@ -55,18 +55,27 @@ end='
 </html>
 '
 echo "${head}${body}${code}${end}" > "${tmp}"
-CURR_HEAD=$(git rev-parse HEAD)
-git checkout --orphan gh-pages
-git add -A
-git commit -m "source commit: ${CURR_HEAD}"
-ls -A | grep -v '^.git$' | xargs -I _ rm -r '_'
-cp "${tmp}" index.html
-git add -A
-git commit --allow-empty -m "auto commit"
-git push \
-  -u \
-  --force \
-  --set-upstream \
-  origin \
-  gh-pages
+mkdir -p "${RUNNER_TEMP}/${repo}"
+cp "${tmp}" "${RUNNER_TEMP}/${repo}/index.html"
+tar \
+  --dereference --hard-dereference \
+  --directory "${RUNNER_TEMP}/${repo}" \
+  -cvf "$RUNNER_TEMP/artifact.tar" \
+  --exclude=.git \
+  --exclude=.github \
+  .
+# CURR_HEAD=$(git rev-parse HEAD)
+# git checkout --orphan gh-pages
+# git add -A
+# git commit -m "source commit: ${CURR_HEAD}"
+# ls -A | grep -v '^.git$' | xargs -I _ rm -r '_'
+# cp "${tmp}" index.html
+# git add -A
+# git commit --allow-empty -m "auto commit"
+# git push \
+#   -u \
+#   --force \
+#   --set-upstream \
+#   origin \
+#   gh-pages
 cd - || return
