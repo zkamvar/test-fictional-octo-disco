@@ -107,7 +107,7 @@ To do this, I created a separate test repository where I added the App ID and
 private key and then created a workflow that would generate a token, fetch the
 repositories that had the app installed, generated the pages, and force-pushed
 them to gh-pages:
-https://github.com/zkamvar/test-fictional-octo-disco/blob/main/.github/workflows/outside-pages.yml
+[.github/workflows/pages-branch-pusher.yml](.github/workflows/pages-branch-pusher.yml)
 
 The push does not have to be a force-push, I just implemented a workflow that
 used force pushing because I had it available. 
