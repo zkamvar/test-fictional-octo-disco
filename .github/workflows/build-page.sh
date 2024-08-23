@@ -35,6 +35,7 @@ head="
 
 <main>
 <h1>Content From ${repo}</h1>
+<p>Generated on: ${timestamp}</p>
 <h2>Bot Information</h2>
 <pre>
 $(gh auth status)
@@ -46,8 +47,8 @@ ${CONTEXT}
 <h2>README.md</h2>
 <p>
 "
-body="${timestamp}<br>$(sed 's/$/<br>/g' < README.md)</p>"
-code='<pre><code>'$(cat ./*.r)'</pre></code>'
+body="<br>$(sed 's/$/<br>/g' < README.md)</p>"
+code='<h2>Code</h2><pre><code>'$(cat ./*.r)'</pre></code>'
 end='
 </main>
 <footer>Site Footer</footer>
@@ -61,6 +62,7 @@ git add -A
 git commit -m "source commit: ${CURR_HEAD}"
 ls -A | grep -v '^.git$' | xargs -I _ rm -r '_'
 cp "${tmp}" index.html
+touch .nojekyll
 git add -A
 git commit --allow-empty -m "auto commit"
 git push \
