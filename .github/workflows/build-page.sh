@@ -44,10 +44,6 @@ source: <a href='https://github.com/${repo}'>${repo}</a>
 <pre>
 $(gh auth status)
 </pre>
-<h2>Context</h2>
-<pre>
-${CONTEXT}
-</pre>
 <h2>README.md</h2>
 <p>
 "
