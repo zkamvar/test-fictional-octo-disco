@@ -72,7 +72,7 @@ flowchart TD
 
     site1-repo---main
     site1-repo---gh-pages
-    app-workflows<-.-|reads from|main
+    main-.->|reads from|app-workflows
     app-->|grants permission to|app-workflows
     app-workflows-.->|writes to|gh-pages
     gh-pages-->|source for|site1
