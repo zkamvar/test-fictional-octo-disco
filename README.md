@@ -133,12 +133,12 @@ flowchart TD
     site1-repo---trigger
     site1-repo---receive
     app-->|grants permission to|build
-    trigger-.->|1. triggers|build
+    trigger-.->|"1 triggers"|build
     
-    build-->|2. builds|artifact
-    build-.->|3. triggers|receive
-    receive-.->|4. downloads|artifact
-    receive-->|5. builds|site1
+    build-->|"2 builds"|artifact
+    build-.->|"3 triggers"|receive
+    receive-.->|"4 downloads"|artifact
+    receive-->|"5 builds"|site1
 ```
 
  - Pros
